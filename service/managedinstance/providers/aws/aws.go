@@ -105,23 +105,57 @@ type Compute struct {
 }
 
 type LaunchSpecification struct {
-	SecurityGroupIDs    []string             `json:"securityGroupIds,omitempty"`
-	ImageID             *string              `json:"imageId,omitempty"`
-	KeyPair             *string              `json:"keyPair,omitempty"`
-	UserData            *string              `json:"userData,omitempty"`
-	ShutdownScript      *string              `json:"shutdownScript,omitempty"`
-	Tenancy             *string              `json:"tenancy,omitempty"`
-	Monitoring          *bool                `json:"monitoring,omitempty"`
-	EBSOptimized        *bool                `json:"ebsOptimized,omitempty"`
-	InstanceTypes       *InstanceTypes       `json:"instanceTypes,omitempty"`
-	CreditSpecification *CreditSpecification `json:"creditSpecification,omitempty"`
-	IAMInstanceProfile  *IAMInstanceProfile  `json:"iamRole,omitempty"`
-	NetworkInterfaces   []*NetworkInterface  `json:"networkInterfaces,omitempty"`
-	Tags                []*Tag               `json:"tags,omitempty"`
+	SecurityGroupIDs    []string              `json:"securityGroupIds,omitempty"`
+	ImageID             *string               `json:"imageId,omitempty"`
+	KeyPair             *string               `json:"keyPair,omitempty"`
+	UserData            *string               `json:"userData,omitempty"`
+	ShutdownScript      *string               `json:"shutdownScript,omitempty"`
+	Tenancy             *string               `json:"tenancy,omitempty"`
+	Monitoring          *bool                 `json:"monitoring,omitempty"`
+	EBSOptimized        *bool                 `json:"ebsOptimized,omitempty"`
+	BlockDeviceMappings []*BlockDeviceMapping `json:"blockDeviceMappings,omitempty"`
+	InstanceTypes       *InstanceTypes        `json:"instanceTypes,omitempty"`
+	CreditSpecification *CreditSpecification  `json:"creditSpecification,omitempty"`
+	IAMInstanceProfile  *IAMInstanceProfile   `json:"iamRole,omitempty"`
+	NetworkInterfaces   []*NetworkInterface   `json:"networkInterfaces,omitempty"`
+	Tags                []*Tag                `json:"tags,omitempty"`
 
 	forceSendFields []string
 	nullFields      []string
 }
+
+type BlockDeviceMapping struct {
+	DeviceName  *string `json:"deviceName,omitempty"`
+	EBS         *EBS    `json:"ebs,omitempty"`
+	NoDevice    *string `json:"noDevice,omitempty"`
+	VirtualName *string `json:"virtualName,omitempty"`
+
+	forceSendFields []string
+	nullFields      []string
+}
+
+type EBS struct {
+	Encrypted           *bool   `json:"encrypted,omitempty"`
+	Iops                *int    `json:"iops,omitempty"`
+	KmsKeyId            *string `json:"kmsKeyId,omitempty"`
+	SnapshotId          *string `json:"snapshotId,omitempty"`
+	VolumeType          *string `json:"volumeType,omitempty"`
+	DeleteOnTermination *bool   `json:"deleteOnTermination,omitempty"`
+	VolumeSize          *int    `json:"volumeSize,omitempty"`
+	//DynamicVolumeSize   *DynamicVolumeSize `json:"dynamicVolumeSize,omitempty"`
+
+	forceSendFields []string
+	nullFields      []string
+}
+
+//type DynamicVolumeSize struct {
+//	BaseSize            *int    `json:"baseSize,omitempty"`
+//	Resource            *string `json:"resource,omitempty"`
+//	SizePerResourceUnit *int    `json:"sizePerResourceUnit,omitempty"`
+//
+//	forceSendFields []string
+//	nullFields      []string
+//}
 
 type CreditSpecification struct {
 	CPUCredits *string `json:"cpuCredits,omitempty"`
@@ -922,6 +956,13 @@ func (o *LaunchSpecification) SetNetworkInterfaces(v []*NetworkInterface) *Launc
 	return o
 }
 
+func (o *LaunchSpecification) SetBlockDeviceMappings(v []*BlockDeviceMapping) *LaunchSpecification {
+	if o.BlockDeviceMappings = v; o.BlockDeviceMappings == nil {
+		o.nullFields = append(o.nullFields, "BlockDeviceMappings")
+	}
+	return o
+}
+
 func (o *LaunchSpecification) SetTags(v []*Tag) *LaunchSpecification {
 	if o.Tags = v; o.Tags == nil {
 		o.nullFields = append(o.nullFields, "Tags")
@@ -930,6 +971,140 @@ func (o *LaunchSpecification) SetTags(v []*Tag) *LaunchSpecification {
 }
 
 // endregion
+
+// region BlockDeviceMappings
+
+func (o BlockDeviceMapping) MarshalJSON() ([]byte, error) {
+	type noMethod BlockDeviceMapping
+	raw := noMethod(o)
+	return jsonutil.MarshalJSON(raw, o.forceSendFields, o.nullFields)
+}
+
+func (o *BlockDeviceMapping) SetDeviceName(v *string) *BlockDeviceMapping {
+	if o.DeviceName = v; o.DeviceName == nil {
+		o.nullFields = append(o.nullFields, "DeviceName")
+	}
+	return o
+}
+
+func (o *BlockDeviceMapping) SetEBS(v *EBS) *BlockDeviceMapping {
+	if o.EBS = v; o.EBS == nil {
+		o.nullFields = append(o.nullFields, "EBS")
+	}
+	return o
+}
+
+func (o *BlockDeviceMapping) SetNoDevice(v *string) *BlockDeviceMapping {
+	if o.NoDevice = v; o.NoDevice == nil {
+		o.nullFields = append(o.nullFields, "NoDevice")
+	}
+	return o
+}
+
+func (o *BlockDeviceMapping) SetVirtualName(v *string) *BlockDeviceMapping {
+	if o.VirtualName = v; o.VirtualName == nil {
+		o.nullFields = append(o.nullFields, "VirtualName")
+	}
+	return o
+}
+
+// endregion
+
+// region EBS
+
+func (o EBS) MarshalJSON() ([]byte, error) {
+	type noMethod EBS
+	raw := noMethod(o)
+	return jsonutil.MarshalJSON(raw, o.forceSendFields, o.nullFields)
+}
+
+func (o *EBS) SetEncrypted(v *bool) *EBS {
+	if o.Encrypted = v; o.Encrypted == nil {
+		o.nullFields = append(o.nullFields, "EBS")
+	}
+	return o
+}
+
+func (o *EBS) SetIops(v *int) *EBS {
+	if o.Iops = v; o.Iops == nil {
+		o.nullFields = append(o.nullFields, "Iops")
+	}
+	return o
+}
+
+func (o *EBS) SetKmsKeyId(v *string) *EBS {
+	if o.KmsKeyId = v; o.KmsKeyId == nil {
+		o.nullFields = append(o.nullFields, "KmsKeyId")
+	}
+	return o
+}
+
+func (o *EBS) SetSnapshotId(v *string) *EBS {
+	if o.SnapshotId = v; o.SnapshotId == nil {
+		o.nullFields = append(o.nullFields, "SnapshotId")
+	}
+	return o
+}
+
+func (o *EBS) SetVolumeType(v *string) *EBS {
+	if o.VolumeType = v; o.VolumeType == nil {
+		o.nullFields = append(o.nullFields, "VolumeType")
+	}
+	return o
+}
+
+func (o *EBS) SetDeleteOnTermination(v *bool) *EBS {
+	if o.DeleteOnTermination = v; o.DeleteOnTermination == nil {
+		o.nullFields = append(o.nullFields, "DeleteOnTermination")
+	}
+	return o
+}
+
+func (o *EBS) SetVolumeSize(v *int) *EBS {
+	if o.VolumeSize = v; o.VolumeSize == nil {
+		o.nullFields = append(o.nullFields, "VolumeSize")
+	}
+	return o
+}
+
+//func (o *EBS) SetDynamicVolumeSize(v *DynamicVolumeSize) *EBS {
+//	if o.DynamicVolumeSize = v; o.DynamicVolumeSize == nil {
+//		o.nullFields = append(o.nullFields, "DynamicVolumeSize")
+//	}
+//	return o
+//}
+
+// end region
+
+//// region Dynamic Volume Size
+//func (o DynamicVolumeSize) MarshalJSON() ([]byte, error) {
+//	type noMethod DynamicVolumeSize
+//	raw := noMethod(o)
+//	return jsonutil.MarshalJSON(raw, o.forceSendFields, o.nullFields)
+//}
+//
+//func (o *DynamicVolumeSize) SetBaseSize(v *int) *DynamicVolumeSize {
+//	if o.BaseSize = v; o.BaseSize == nil {
+//		o.nullFields = append(o.nullFields, "SetBaseSize")
+//	}
+//	return o
+//}
+//
+//func (o *DynamicVolumeSize) SetResource(v *string) *DynamicVolumeSize {
+//	if o.Resource = v; o.Resource == nil {
+//		o.nullFields = append(o.nullFields, "Resource")
+//	}
+//	return o
+//}
+//
+//func (o *DynamicVolumeSize) SetSizePerResourceUnit(v *int) *DynamicVolumeSize {
+//	if o.SizePerResourceUnit = v; o.SizePerResourceUnit == nil {
+//		o.nullFields = append(o.nullFields, "SizePerResourceUnit")
+//	}
+//	return o
+//}
+//
+//// end region
 
 // region NetworkInterface
 
